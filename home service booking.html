@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>Service Booking</title>
+<style>
+body {
+font-family: sans-serif;
+margin: 10px;
+}
+.service-box {
+border: 1px solid black;
+margin-bottom: 10px;
+padding: 10px;
+}
+.hidden {
+display: none;
+}
+</style>
+</head>
+<body>
+<h1>Home Service Booking</h1>
+<h3>Select Category</h3>
+<select id="categorySelect" onchange="filterServices()">
+<option value="all">All</option>
+<option value="cleaning">Cleaning</option>
+<option value="repair">Repair</option>
+<option value="electrical">Electrical</option>
+</select>
+<h3>Available Services</h3>
+<div id="servicesList"></div>
+<div id="bookingSection" class="hidden">
+<hr>
+<h3>Booking Form</h3>
+<p>Selected Service: <b id="selectedServiceTitle"></b></p>
+<p>Price: ₹<span id="selectedServicePrice"></span></p>
+\<form id="bookingForm" onsubmit="submitForm(event)">
+  \<label>Name:\</label>\<br>
+  \<input type="text" id="custName" required>\<br>\<br>
+
+  \<label>Date:\</label>\<br>
+  \<input type="date" id="custDate" required>\<br>\<br>
+
+  \<label>Address:\</label>\<br>
+  \<textarea id="custAddress" required>\</textarea>\<br>\<br>
+
+  \<input type="submit" value="Submit Booking">
+  \<button type="button" onclick="cancelBooking()">Cancel\</button>
+\</form>
+</div>
+<p id="msg" style="color: green;"></p>
+<script>
+var services = [
+{ id: 1, title: "House Cleaning", category: "cleaning", price: 1000 },
+{ id: 2, title: "Pipe Repair", category: "repair", price: 800 },
+{ id: 3, title: "Wiring Fix", category: "electrical", price: 900 },
+{ id: 4, title: "Sofa Wash", category: "cleaning", price: 600 }
+];
+function filterServices() {
+  var cat = document.getElementById("categorySelect").value;
+  var container = document.getElementById("servicesList");
+  container.innerHTML = "";
+
+  for (var i = 0; i < services.length; i++) {
+    if (cat === "all" || services[i].category === cat) {
+      var div = document.createElement("div");
+      div.className = "service-box";
+      div.innerHTML = services[i].title + " - ₹" + services[i].price + " " +
+        '\<button onclick="selectService(' + services[i].id + ')">Book\</button>';
+      container.appendChild(div);
+    }
+  }
+}
+
+function selectService(id) {
+  var s;
+  for (var i = 0; i < services.length; i++) {
+    if (services[i].id === id) {
+      s = services[i];
+      break;
+    }
+  }
+  if (s) {
+    document.getElementById("selectedServiceTitle").innerText = s.title;
+    document.getElementById("selectedServicePrice").innerText = s.price;
+    document.getElementById("bookingSection").className = "";
+    document.getElementById("msg").innerText = "";
+  }
+}
+
+function cancelBooking() {
+  document.getElementById("bookingSection").className = "hidden";
+}
+
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById("bookingSection").className = "hidden";
+  document.getElementById("msg").innerText = "Booking submitted successfully.";
+  document.getElementById("bookingForm").reset();
+}
+
+// Initial load
+filterServices();
+</script>
+</body>
+</html>
